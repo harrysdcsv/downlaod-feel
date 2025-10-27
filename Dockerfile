@@ -4,13 +4,17 @@ FROM python:3.12-slim
 # Set the working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies including build tools for TgCrypto
 RUN apt-get update && apt-get install -y \
     wget \
     unzip \
     curl \
     ffmpeg \
     aria2 \
+    gcc \
+    g++ \
+    make \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install mp4decrypt (Bento4)
