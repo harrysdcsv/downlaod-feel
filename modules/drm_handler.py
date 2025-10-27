@@ -239,8 +239,13 @@ async def drm_handler(bot: Client, m: Message):
                 return
   
             Vxy = links[i][1].replace("file/d/","uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing","")
-            url = "https://" + Vxy
-            link0 = "https://" + Vxy
+            # Handle URLs that already have https:// prefix
+            if Vxy.startswith("http://") or Vxy.startswith("https://"):
+                url = Vxy
+                link0 = Vxy
+            else:
+                url = "https://" + Vxy
+                link0 = "https://" + Vxy
 
             name1 = links[i][0].replace("(", "[").replace(")", "]").replace("_", "").replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             if m.text:
@@ -263,7 +268,19 @@ async def drm_handler(bot: Client, m: Message):
                     name = f'{str(count).zfill(3)}) {name1[:60]} {endfilename}'
                     namef = f'{name1[:60]} {endfilename}'
                 
-            if "visionias" in url:
+            if "jnc-appx.vercel.app" in url:
+                # JNC APPX service - already provides m3u8 links directly
+                # Format: https://jnc-appx.vercel.app/play/{ENCRYPTED_ID}/main.m3u8
+                # No need to process, URL is already usable
+                pass
+
+            elif "appx.co.in" in url and ".m3u8" in url:
+                # AppX platform video streams (HLS)
+                # Similar to Classplus, needs proper headers
+                # Format: https://videos.appx.co.in/.../playlist.m3u8
+                pass
+
+            elif "visionias" in url:
                 async with ClientSession() as session:
                     async with session.get(url, headers={'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Pragma': 'no-cache', 'Referer': 'http://www.visionias.in/', 'Sec-Fetch-Dest': 'iframe', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'cross-site', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Linux; Android 12; RMX2121) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36', 'sec-ch-ua': '"Chromium";v="107", "Not=A?Brand";v="24"', 'sec-ch-ua-mobile': '?1', 'sec-ch-ua-platform': '"Android"',}) as resp:
                         text = await resp.text()
@@ -322,6 +339,15 @@ async def drm_handler(bot: Client, m: Message):
            
             if "jw-prod" in url:
                 cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
+            elif "jnc-appx.vercel.app" in url:
+                # JNC APPX - m3u8 stream with proper headers
+                cmd = f'yt-dlp -f "{ytf}" --add-header "referer:https://jnc-appx.vercel.app/" --add-header "origin:https://jnc-appx.vercel.app" "{url}" -o "{name}.mp4"'
+            elif "appx.co.in" in url and ".m3u8" in url:
+                # AppX platform video streams (HLS) - similar to Classplus
+                cmd = f'yt-dlp -f "{ytf}" --add-header "referer:https://www.appx.co.in/" --add-header "origin:https://www.appx.co.in" "{url}" -o "{name}.mp4"'
+            elif "classx.co.in" in url:
+                # ClassX m3u8 streams
+                cmd = f'yt-dlp -f "{ytf}" --add-header "referer:https://www.classx.co.in/" "{url}" -o "{name}.mp4"'
             elif "webvideos.classplusapp." in url:
                cmd = f'yt-dlp --add-header "referer:https://web.classplusapp.com/" --add-header "x-cdn-tag:empty" -f "{ytf}" "{url}" -o "{name}.mp4"'
             elif "youtube.com" in url or "youtu.be" in url:
@@ -407,7 +433,48 @@ async def drm_handler(bot: Client, m: Message):
                         continue    
   
                 elif ".pdf" in url:
-                    if "cwmediabkt99" in url:
+                    if "static-wsb.appx.co.in" in url or ("appx.co.in" in url and ".pdf" in url):
+                        # APPX static signed PDF URLs
+                        # Handles both static-wsb.appx.co.in and videos.appx.co.in PDF links
+                        try:
+                            import requests
+                            from urllib.parse import urlparse
+                            
+                            # Sanitize filename from URL path (before query params)
+                            parsed = urlparse(url)
+                            actual_filename = parsed.path.split('/')[-1]
+                            if not actual_filename or actual_filename == '':
+                                actual_filename = f'{namef}.pdf'
+                            elif not actual_filename.endswith('.pdf'):
+                                actual_filename = f'{namef}.pdf'
+                            else:
+                                actual_filename = actual_filename.split('?')[0]  # Remove query params from filename
+                            
+                            # Download with proper headers and streaming for large files
+                            url = url.replace(" ", "%20")
+                            headers = {
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                                'Referer': 'https://www.appx.co.in/'
+                            }
+                            response = requests.get(url, headers=headers, stream=True, allow_redirects=True, timeout=30)
+                            response.raise_for_status()
+                            
+                            # Save using chunked download for large files
+                            with open(actual_filename, 'wb') as file:
+                                for chunk in response.iter_content(chunk_size=8192):
+                                    if chunk:
+                                        file.write(chunk)
+                            
+                            copy = await bot.send_document(chat_id=channel_id, document=actual_filename, caption=cc1)
+                            count += 1
+                            os.remove(actual_filename)
+                        except requests.exceptions.RequestException as e:
+                            await m.reply_text(f"⚠️Failed to download PDF: {str(e)}")
+                            failed_count += 1
+                        except Exception as e:
+                            await m.reply_text(f"⚠️PDF Download Failed: {str(e)}")
+                            failed_count += 1
+                    elif "cwmediabkt99" in url:
                         max_retries = 15  # Define the maximum number of retries
                         retry_delay = 4  # Delay between retries in seconds
                         success = False  # To track whether the download was successful
