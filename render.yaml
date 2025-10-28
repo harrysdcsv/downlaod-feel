@@ -19,4 +19,4 @@ services:
       - key: CREDIT
         value: Harry
       - key: PORT
-        value: 8000
+        value: 10000
