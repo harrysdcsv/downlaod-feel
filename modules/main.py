@@ -969,8 +969,15 @@ def reset_and_set_commands():
 
 
 if __name__ == "__main__":
-    reset_and_set_commands()
-    notify_owner() 
+    try:
+        reset_and_set_commands()
+    except Exception as e:
+        print(f"Failed to set commands: {e}")
+    
+    try:
+        notify_owner() 
+    except Exception as e:
+        print(f"Failed to notify owner: {e}")
 
 
 bot.run()
