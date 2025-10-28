@@ -107,7 +107,7 @@ async def start(bot, m: Message):
             [InlineKeyboardButton("✨ Commands", callback_data="cmd_command")],
             [InlineKeyboardButton("💎 Features", callback_data="feat_command"), InlineKeyboardButton("⚙️ Settings", callback_data="setttings")],
             [InlineKeyboardButton("💳 Plans", callback_data="upgrade_command")],
-            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url=REPO_URL)],
+            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url="https://github.com/Harrytt345/saini-txt-direct")],
         ])
         
         await start_message.edit_text(
@@ -122,7 +122,7 @@ async def start(bot, m: Message):
             [InlineKeyboardButton("✨ Commands", callback_data="cmd_command")],
             [InlineKeyboardButton("💎 Features", callback_data="feat_command"), InlineKeyboardButton("⚙️ Settings", callback_data="setttings")],
             [InlineKeyboardButton("💳 Plans", callback_data="upgrade_command")],
-            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url=REPO_URL)],
+            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url="https://github.com/Harrytt345/saini-txt-direct")],
         ])
         await start_message.edit_text(
            f" 🎉 Welcome {m.from_user.first_name} to DRM Bot! 🎉\n\n"
@@ -140,7 +140,7 @@ async def back_to_main_menu(client, callback_query):
             [InlineKeyboardButton("✨ Commands", callback_data="cmd_command")],
             [InlineKeyboardButton("💎 Features", callback_data="feat_command"), InlineKeyboardButton("⚙️ Settings", callback_data="setttings")],
             [InlineKeyboardButton("💳 Plans", callback_data="upgrade_command")],
-            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url=REPO_URL)],
+            [InlineKeyboardButton(text="📞 Contact", url=f"tg://openmessage?user_id={OWNER}"), InlineKeyboardButton(text="🛠️ Repo", url="https://github.com/Harrytt345/saini-txt-direct")],
         ])
     
     await callback_query.message.edit_media(
@@ -940,6 +940,18 @@ def notify_owner():
     requests.post(url, data=data)
 
 
+def delete_webhook():
+    """Delete any existing webhooks to ensure clean polling mode"""
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook"
+    params = {"drop_pending_updates": True}
+    response = requests.post(url, params=params)
+    if response.status_code == 200:
+        print("✅ Webhook deleted successfully. Using polling mode.")
+    else:
+        print(f"⚠️ Webhook deletion response: {response.text}")
+    return response
+
+
 def reset_and_set_commands():
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/setMyCommands"
     # Reset
@@ -957,7 +969,7 @@ def reset_and_set_commands():
         {"command": "t2h", "description": "🌐 .txt → .html Converter"},
         {"command": "logs", "description": "👁️ View Bot Activity"},
         {"command": "broadcast", "description": "📢 Broadcast to All Users"},
-        {"command": "broadusers", "description": "👨‍❤️‍👨 All Broadcasting Users"},
+        {"command": "broadusers", "description": "👨‍👨‍👧‍👨 All Broadcasting Users"},
         {"command": "addauth", "description": "▶️ Add Authorisation"},
         {"command": "rmauth", "description": "⏸️ Remove Authorisation "},
         {"command": "users", "description": "👨‍👨‍👧‍👦 All Premium Users"},
@@ -969,8 +981,20 @@ def reset_and_set_commands():
 
 
 if __name__ == "__main__":
-    reset_and_set_commands()
-    notify_owner() 
+    try:
+        delete_webhook()
+    except Exception as e:
+        print(f"Failed to delete webhook: {e}")
+    
+    try:
+        reset_and_set_commands()
+    except Exception as e:
+        print(f"Failed to set commands: {e}")
+    
+    try:
+        notify_owner() 
+    except Exception as e:
+        print(f"Failed to notify owner: {e}")
 
 
 bot.run()
