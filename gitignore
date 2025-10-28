@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# Bot session files
+*.session
+*.session-journal
+
+# Sensitive files
+device_client_id_blob
+device_private_key.txt
+youtube_cookies.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Replit
+.replit
+replit.nix
+.config/
+.cache/
+.upm/
+.pythonlibs/
+poetry.lock
+pyproject.toml
