@@ -38,8 +38,8 @@ RUN mkdir -p downloads
 # Make start script executable
 RUN chmod +x start.sh
 
-# Expose port for Flask app
-EXPOSE 8000
+# Expose port for Flask app (port will be set via PORT env variable)
+EXPOSE 10000
 
 # Set the command to run the startup script
 CMD ["bash", "start.sh"]
