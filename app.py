@@ -11,25 +11,25 @@ def hello_world():
     <div class="container" style="bg-dark text-red text-center py-3 mt-5">
         <a href="https://github.com/Harrytt345" class="card">
             <p>
-	    <center>
-	        <br
+            <center>
+                <br
               /><br
               />▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄<br 
-	      />██░▄▄▄░█░▄▄▀█▄░▄██░▀██░█▄░▄██<br 
+              />██░▄▄▄░█░▄▄▀█▄░▄██░▀██░█▄░▄██<br 
               />██▄▄▄▀▀█░▀▀░██░███░█░█░██░███<br 
-	      />██░▀▀▀░█░██░█▀░▀██░██▄░█▀░▀██<br 
+              />██░▀▀▀░█░██░█▀░▀██░██▄░█▀░▀██<br 
               />▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀<br 
-	      /><br
+              /><br
               /><br>
                 <b>Powered By zerocanbot</b>
-		</center>
+                </center>
             </p>
         </a>
     </div>
-	<br></br>
+        <br></br>
         <center>
-	<footer class="bg-dark text-white text-center py-3 mt-5">
-		<div class="footer__copyright">
+        <footer class="bg-dark text-white text-center py-3 mt-5">
+                <div class="footer__copyright">
             <p class="footer__copyright-info">
                 © 2025 zerocanbot. All rights reserved.
             </p>
@@ -44,5 +44,5 @@ def hello_world():
 
 if __name__ == "__main__":
     import os
-    port = int(os.environ.get('PORT', 8080))
+    port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
