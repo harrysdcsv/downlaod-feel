@@ -13,22 +13,22 @@
     "env": {
         "API_ID": {
             "description": "𝑬𝒏𝒕𝒆𝒓 𝒀𝒐𝒖𝒓 𝑨𝒑𝒊 𝑰𝑫",
-            "value": "23801453",
+            "value": "11557752",
             "required": true
         },
         "API_HASH": {
             "description": "𝑬𝒏𝒕𝒆𝒓 𝒀𝒐𝒖𝒓 𝑨𝒑𝒊 𝑯𝒂𝒔𝒉",
-            "value": "7b8949500297326ed8952a6c345da02c",
+            "value": "127b73bd59f71ee4ade8bb2161f1228f",
             "required": true
         },
         "BOT_TOKEN": {
-            "description": "8315210181:AAHdlM7ZJirGIcsuLLUxje8u2ab13foyrhU",
+            "description": "8336357660:AAHxh0BuoUu6Pq8VASVBrDROBDllXSb5tAs",
             "value": "",
             "required": true
         },
         "OWNER": {
             "description": "𝙀𝙣𝙩𝙚𝙧 𝙔𝙤𝙪𝙧 𝙏𝙚𝙡𝙚𝙜𝙧𝙖𝙢 𝙄𝘿",
-            "value": "7968237251",
+            "value": "7385595817",
             "required": true
         },
         "CREDIT": {
